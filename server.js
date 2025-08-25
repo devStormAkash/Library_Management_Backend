@@ -27,22 +27,41 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // CORS: permissive in dev, restricted in production using CLIENT_ORIGIN env
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:3000";
-if (process.env.NODE_ENV === "production") {
-  app.use(
-    cors({
-      origin: (origin, callback) => {
-        if (!origin) return callback(new Error("CORS: origin missing"), false);
-        if (origin === CLIENT_ORIGIN) return callback(null, true);
-        return callback(new Error("CORS: origin not allowed"), false);
-      },
-      credentials: true,
-    })
-  );
-} else {
-  // development: allow tools like Postman and local frontend
-  app.use(cors({ origin: true, credentials: true }));
-}
+// const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:3000";
+// if (process.env.NODE_ENV === "production") {
+//   app.use(
+//     cors({
+//       origin: (origin, callback) => {
+//         if (!origin) return callback(new Error("CORS: origin missing"), false);
+//         if (origin === CLIENT_ORIGIN) return callback(null, true);
+//         return callback(new Error("CORS: origin not allowed"), false);
+//       },
+//       credentials: true,
+//     })
+//   );
+// } else {
+//   // development: allow tools like Postman and local frontend
+//   app.use(cors({ origin: true, credentials: true }));
+// }
+
+
+const allowedOrigins = [
+  process.env.CLIENT_ORIGIN, // e.g. https://your-frontend.vercel.app
+  "http://localhost:3000", // dev
+  // add any staging URLs etc.
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin) return callback(null, true); // allow non-browser (Postman/server)
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      console.warn("Blocked CORS origin:", origin);
+      return callback(new Error("CORS: origin not allowed"), false);
+    },
+    credentials: true,
+  })
+);
 
 // MongoDB Connection
 
