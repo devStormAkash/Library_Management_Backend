@@ -45,23 +45,47 @@ app.use(limiter);
 // }
 
 
-const allowedOrigins = [
-  process.env.CLIENT_ORIGIN, // e.g. https://your-frontend.vercel.app
-  "http://localhost:3000", // dev
-  // add any staging URLs etc.
-].filter(Boolean);
+// const allowedOrigins = [
+//   process.env.CLIENT_ORIGIN, // e.g. https://your-frontend.vercel.app
+//   "http://localhost:3000", // dev
+//   // add any staging URLs etc.
+// ].filter(Boolean);
+
+// app.use(
+//   cors({
+//     origin(origin, callback) {
+//       if (!origin) return callback(null, true); // allow non-browser (Postman/server)
+//       if (allowedOrigins.includes(origin)) return callback(null, true);
+//       console.warn("Blocked CORS origin:", origin);
+//       return callback(new Error("CORS: origin not allowed"), false);
+//     },
+//     credentials: true,
+//   })
+// );
+
+const CLIENT_ORIGIN = "https://library-management-frontend-two-mu.vercel.app";
 
 app.use(
   cors({
-    origin(origin, callback) {
-      if (!origin) return callback(null, true); // allow non-browser (Postman/server)
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      console.warn("Blocked CORS origin:", origin);
-      return callback(new Error("CORS: origin not allowed"), false);
-    },
+    origin: CLIENT_ORIGIN,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
+// Handle preflight requests explicitly
+app.options(
+  "*",
+  cors({
+    origin: CLIENT_ORIGIN,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
+app.use(express.json());
 
 // MongoDB Connection
 
