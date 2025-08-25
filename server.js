@@ -63,11 +63,11 @@ app.use(limiter);
 //   })
 // );
 
-const CLIENT_ORIGIN = "https://library-management-frontend-two-mu.vercel.app";
+// const CLIENT_ORIGIN = "https://library-management-frontend-two-mu.vercel.app";
 
 app.use(
   cors({
-    origin: CLIENT_ORIGIN,
+    origin: process.env.CLIENT_ORIGIN,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
@@ -78,7 +78,7 @@ app.use(
 app.options(
   "*",
   cors({
-    origin: CLIENT_ORIGIN,
+    origin: process.env.CLIENT_ORIGIN,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
