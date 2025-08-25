@@ -13,10 +13,12 @@ const connectDb = async () => {
     "your-super-secret-jwt-key-change-this-in-production";
 
   mongoose
-    .connect(MONGODB_URI, {
+    await mongoose.connect(MONGODB_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 30000
     })
+
     .then(() => console.log("✅ Connected to MongoDB"))
     .catch((error) => console.error("❌ MongoDB connection error:", error));
     
