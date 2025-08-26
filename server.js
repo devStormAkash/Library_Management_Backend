@@ -67,6 +67,7 @@ const CLIENT_ORIGIN = "https://library-management-frontend-two-mu.vercel.app";
 
 app.use(
   cors({
+    // origin: process.env.CLIENT_ORIGIN,
     origin: CLIENT_ORIGIN,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -78,7 +79,8 @@ app.use(
 app.options(
   "*",
   cors({
-    origin: CLIENT_ORIGIN,
+    // origin: process.env.CLIENT_ORIGIN,
+    CLIENT_ORIGIN,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
